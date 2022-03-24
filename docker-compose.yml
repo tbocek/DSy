@@ -1,0 +1,8 @@
+version: '3'
+services:
+  server1:
+    build: .
+  client:
+    image: alpine
+    command: >
+      sh -c "sleep 3 && echo hallo | nc server1 8081"
