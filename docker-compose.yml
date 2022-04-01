@@ -1,8 +1,12 @@
 version: '3'
 services:
-  server1:
+  services:
     build: .
-  client:
-    image: alpine
-    command: >
-      sh -c "sleep 3 && echo hallo | nc server1 8081"
+    ports:
+      - "8080-8085:8080"
+  lb:
+    image: caddy
+    ports:
+      - "7070:7070"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
