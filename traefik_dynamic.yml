@@ -1,0 +1,19 @@
+http:
+  routers:
+    myservice:
+      rule: "Host(`localhost`)"
+      service: myservice
+      entrypoints:
+        - "websecure"
+      tls:
+        domains:
+          - main: "localhost"
+  services:
+    myservice:
+      loadBalancer:
+        servers:
+          - url: "http://caddy:80"
+tls:
+  certificates:
+    - certFile: "/etc/traefik/localhost+1.pem"
+      keyFile: "/etc/traefik/localhost+1-key.pem"

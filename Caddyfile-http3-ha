@@ -1,0 +1,4 @@
+#Caddyfile-http3
+localhost:80 {
+  respond "Hello, world! You're using {http.request.proto}"
+}
