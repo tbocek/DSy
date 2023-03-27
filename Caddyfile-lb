@@ -1,0 +1,6 @@
+#Caddyfile-traffic2
+:80
+reverse_proxy service1 service2 {
+  unhealthy_status 5xx
+  fail_duration 10s
+}

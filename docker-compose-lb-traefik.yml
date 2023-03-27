@@ -1,0 +1,26 @@
+version: '3'
+services:
+  service1:
+    image: caddy
+    volumes:
+      - ./Caddyfile-traffic1:/etc/caddy/Caddyfile
+
+  service2:
+    image: caddy
+    volumes:
+      - ./Caddyfile-traffic2:/etc/caddy/Caddyfile
+
+  traefik:
+    image: traefik:latest
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
+      - ./localhost+1-key.pem:/etc/traefik/localhost+1-key.pem
+      - ./localhost+1.pem:/etc/traefik/localhost+1.pem
+      - ./localhost+1.pem:/etc/ssl/certs/localhost+1.pem
+    ports:
+      - 80:80
+      - 443:443
+      - "443:443/udp"
+    restart: unless-stopped
+
