@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+    <title>HTTP3 Test</title>
+</head>
+<body>
+Lets do a fetch from /api
+
+<script>
+    fetch('/api')
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => {console.log(error)});
+</script>
+</body>
+</html>

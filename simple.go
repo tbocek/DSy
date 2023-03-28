@@ -19,13 +19,15 @@ func init() {
 func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %d", rnd)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status":"OK"}`))
+		fmt.Print("here")
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hi")
 	})
 
-	log.Print("listinging on :" + os.Args[1])
+	log.Print("listening on :" + os.Args[1])
 	log.Fatal(http.ListenAndServe(":"+os.Args[1], nil))
 }
