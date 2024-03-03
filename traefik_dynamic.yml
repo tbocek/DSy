@@ -1,5 +1,10 @@
 http:
   routers:
+    dashboard:
+      rule: "PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      entrypoints:
+        - "web"
+      service: "api@internal"
     myservice:
       rule: "Host(`localhost`)"
       service: myservice
@@ -11,8 +16,14 @@ http:
   services:
     myservice:
       loadBalancer:
+        healthcheck:
+          path: "/"
+          interval: "10s"
+          timeout: "1s"
         servers:
-          - url: "http://caddy:80"
+          - url: "http://service1:80"
+          - url: "http://service2:80"
+
 tls:
   certificates:
     - certFile: "/etc/traefik/localhost+1.pem"

@@ -14,6 +14,9 @@ entryPoints:
     http3:
       advertisedPort: "443"
 
+api:
+  dashboard: true
+
 providers:
   file:
     filename: "/etc/traefik/traefik_dynamic.yml"

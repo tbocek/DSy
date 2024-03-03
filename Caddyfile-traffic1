@@ -1,0 +1,4 @@
+#Caddyfile-traffic1
+:80 {
+  respond "Hello, world! You're using {http.request.proto}. Service 1"
+}
