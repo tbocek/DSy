@@ -6,4 +6,4 @@ RUN go build simple.go
 FROM alpine
 WORKDIR /app
 COPY --from=builder /build/simple .
-CMD ["./simple", "8080"]
+ENTRYPOINT ["./simple", "8080"]

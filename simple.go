@@ -12,7 +12,7 @@ import (
 var rnd = 0
 
 func init() {
-	rand.Seed(int64(time.Now().Nanosecond()))
+	rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
 	rnd = rand.Int()
 }
 
@@ -20,12 +20,13 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK"}`))
-		fmt.Print("here")
+		w.Write([]byte(`{"status":"OK1"}`))
+		fmt.Print("serving /\n")
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hi")
+		w.Write([]byte(`"Hi, all good!"`))
+		fmt.Print("serving /health\n")
 	})
 
 	log.Print("listening on :" + os.Args[1])
