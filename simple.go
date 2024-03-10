@@ -20,7 +20,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK1"}`))
+		w.Write([]byte(`{"status":"OK2"}`))
 		fmt.Print("serving /\n")
 	})
 
