@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue3 API Example</title>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+<div id="app">
+    <h1>Users</h1>
+    <ul>
+        <li v-for="user in users" :key="user.id">{{ user.name }} ({{ user.email }})</li>
+    </ul>
+</div>
+
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    const app = createApp({
+        setup() {
+            const users = ref([]);
+
+            onMounted(async () => {
+                const response = await fetch('/api/users');
+                const data = await response.json();
+                users.value = data;
+            });
+
+            return { users };
+        }
+    });
+
+    app.mount('#app');
+</script>
+</body>
+</html>

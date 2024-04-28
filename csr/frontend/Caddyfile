@@ -1,0 +1,6 @@
+:3000 {
+    reverse_proxy /api/* http://api:8081
+    root * /www
+    file_server
+}
+
