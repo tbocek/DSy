@@ -1,0 +1,13 @@
+version: '3'
+services:
+  haproxy:
+    image: haproxy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  
+  go-service:
+    build:
+      context: .
+      dockerfile: Dockerfile

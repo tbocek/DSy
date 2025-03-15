@@ -1,7 +1,7 @@
 version: '3'
 services:
   services:
-    build: .
+    build: ..
     ports:
       - "8080-8085:8080"
   lb:

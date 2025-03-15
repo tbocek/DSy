@@ -1,0 +1,15 @@
+version: '3'
+services:
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+
+  go-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000-8002:8080"

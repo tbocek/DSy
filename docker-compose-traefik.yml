@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=web"
+
+  go-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.service.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.service.entrypoints=web"
+      - "traefik.http.services.service.loadbalancer.sticky=true"
+      - "traefik.http.services.service.loadbalancer.sticky.cookie.secure=false"
+      - "traefik.http.services.service.loadbalancer.sticky.cookie.name=go_service_sticky"
+      - "traefik.http.services.service.loadbalancer.server.port=8080"
+      - "traefik.http.services.service.loadbalancer.healthCheck.path=/health"
+      - "traefik.http.services.service.loadbalancer.healthCheck.interval=3s"
+      - "traefik.http.services.service.loadbalancer.healthCheck.timeout=1s"

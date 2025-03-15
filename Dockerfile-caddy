@@ -1,0 +1,3 @@
+FROM caddy:alpine
+WORKDIR /srv
+ENTRYPOINT ["caddy"]

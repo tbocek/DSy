@@ -19,8 +19,14 @@ func init() {
 func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK2"}`))
+		w.Header().Set("Content-Type", "text/html")
+		htmlContent := fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<body>
+    <h1>Service: %d</h1>
+</body>
+</html>`, rnd)
+		w.Write([]byte(htmlContent))
 		fmt.Print("serving /\n")
 	})
 

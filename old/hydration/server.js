@@ -45,7 +45,7 @@ app.get("/", async (req, res) => {
           </head>
           <body>
             <div id="app">${html}</div>
-            <script>window.__INITIAL_STATE__ = ${JSON.stringify({ text })}</script>
+            <script>window.__INITIAL_STATE__ = ${JSON.stringify({text})}</script>
             <script src="/client.js"></script>
           </body>
         </html>

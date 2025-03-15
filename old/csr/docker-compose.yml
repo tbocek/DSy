@@ -1,13 +1,13 @@
 version: '3.9'
 services:
   api:
-    build: api/.
+    build: api
     ports:
       - "8081:8081"
     depends_on:
       - db
   frontend:
-    build: frontend/.
+    build: frontend
     ports:
       - "3000:3000"
   db:
