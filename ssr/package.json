@@ -1,0 +1,12 @@
+{
+    "name": "ssr-example",
+    "version": "1.0.0",
+    "description": "Server-Side Rendering Example with Node.js and Express",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}
