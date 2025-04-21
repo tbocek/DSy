@@ -16,7 +16,7 @@ var (
 	}
 )
 
-type Date struct {
+type DateWS struct {
 	Now string `json:"now"`
 }
 
@@ -41,33 +41,19 @@ func ws(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Sent from the browser: [%v]", string(req))
 
-	go func(conn *websocket.Conn) {
-		for {
-			w, err := conn.NextWriter(messageType)
-			if err != nil {
-				log.Printf("NextWriter error: %v", err)
-				conn.Close()
-				return
-			}
+	for {
+		//error handling not shown
+		obj, _ := json.Marshal(DateWS{
+			Now: time.Now().Format(time.RFC3339),
+		})
 
-			json, err := json.Marshal(Date{
-				Now: time.Now().Format(time.RFC3339),
-			})
-			if err != nil {
-				log.Printf("cannot marshal json: %v", err)
-				conn.Close()
-				return
-			}
-
-			w.Write(json)
-			w.Close()
-			time.Sleep(1 * time.Second)
-		}
-	}(conn)
+		conn.WriteMessage(messageType, obj)
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func main() {
-	log.Print("Starting server...")
+	log.Print("Starting WS server...")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "ws.html")
 	})
