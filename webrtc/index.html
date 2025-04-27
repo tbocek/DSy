@@ -1,0 +1,95 @@
+<html>
+<head>
+    <script>
+        const uid = "uid" + Math.random();
+        let peerConnection;
+        let dataChannel;
+
+        const serverConnection = new WebSocket('ws://' + window.location.hostname + ':4000');
+        serverConnection.onmessage = gotMessageFromServer;
+
+        function startup() {
+            document.getElementById('connectButton').addEventListener('click', connectPeers, false);
+            document.getElementById('sendButton').addEventListener('click', sendMessage, false);
+            peerConnection = new RTCPeerConnection(); //add STUN/TURN here
+            peerConnection.onicecandidate = gotIceCandidate;
+            dataChannel = peerConnection.createDataChannel("test");//doing this after offer fails
+        }
+
+        function sendMessage() {
+            let messageInputBox = document.getElementById('message_send');
+            console.log('Send message: ' + messageInputBox.value);
+            dataChannel.send(messageInputBox.value);
+            messageInputBox.value = "";
+            messageInputBox.focus();
+        }
+
+        function connectPeers() {
+            peerConnection.createOffer().then(createdDescription).catch(errorHandler)
+        }
+
+        function createdDescription(description) {
+            console.log('Got description');
+            peerConnection.ondatachannel = gotDataChannel;
+            peerConnection.setLocalDescription(description).then(function() {
+                serverConnection.send(JSON.stringify({'sdp': peerConnection.localDescription, 'uid': uid}));
+            }).catch(errorHandler);
+        }
+
+        function gotDataChannel(event) {
+            console.log('Got data channel');
+            event.channel.onmessage = function(event) {
+                let receiveBox = document.getElementById('message_rcv');
+                receiveBox.value = event.data;
+            }
+        }
+
+        function gotMessageFromServer(message) {
+            console.log(message)
+            const signal = JSON.parse(message.data);
+            if(signal.uid === uid) return; // Ignore messages from ourself
+
+            console.log('Got message from signaling server: '+message.data);
+            if(signal.sdp) {
+                peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {
+                    // Only create answers in response to offers
+                    if(signal.sdp.type === 'offer') {
+                        peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
+                    }
+                }).catch(errorHandler);
+            } else if(signal.ice) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+            }
+        }
+
+        function gotIceCandidate(event) {
+            console.log(event)
+            if(event.candidate != null) {
+                let iceCandidate = JSON.stringify({'ice': event.candidate, 'uid': uid});
+                console.log('Got ICE candidate: '+iceCandidate);
+                serverConnection.send(iceCandidate);
+            }
+        }
+
+        function errorHandler(error) {
+            console.log("Error: "+error);
+        }
+
+        window.addEventListener("load", function() {
+            startup();
+        });
+    </script>
+</head>
+<body>
+
+<button id="connectButton">Connect</button>
+<label for="message_send">Enter a message:
+    <input type="text" id="message_send" placeholder="Message send" size=30 maxlength=30>
+</label>
+<button id="sendButton">Send</button>
+<label for="message_rcv">Messages received:
+    <input type="text" id="message_rcv" placeholder="Message received" size=30 maxlength=30 disabled>
+</label>
+
+</body>
+</html>
