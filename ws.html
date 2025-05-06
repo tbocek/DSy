@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Time</title>
+</head>
+<body>
+
+<h2>Showing Time</h2>
+<p id="text">n/a</p>
+
+<script type="text/javascript">
+    const connection = new WebSocket('ws://localhost:8080/ws');
+    connection.onopen = function () {
+        connection.send('start OST');
+    };
+    let counter = 0;
+    connection.onmessage = function (e) {
+        console.log('update websocket: ' + counter++);
+        const date = JSON.parse(e.data);
+        const element = document.getElementById('text');
+        element.innerHTML = 'Time: ' + date.now;
+    };
+</script>
+</body>
+</html>

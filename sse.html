@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Time (SSE)</title>
+</head>
+<body>
+<h2>Showing Time (Server-Sent Events)</h2>
+<p id="text">n/a</p>
+<script type="text/javascript">
+    const evtSource = new EventSource("/sse");
+    let counter = 0;
+
+    evtSource.onmessage = function(event) {
+        console.log('update SSE: ' + counter++);
+        const date = JSON.parse(event.data);
+        const element = document.getElementById("text");
+        element.innerHTML = 'Time: ' + date.now;
+    };
+
+    evtSource.onerror = function() {
+        console.log('SSE connection error');
+        evtSource.close();
+    };
+</script>
+</body>
+</html>
