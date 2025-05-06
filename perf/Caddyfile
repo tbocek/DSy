@@ -1,0 +1,45 @@
+# Simple Caddyfile configuration
+# This will handle HTTP traffic on localhost
+
+localhost {
+    # Enable logging
+    log {
+        level ERROR
+    }
+
+    # Reverse proxy to our Go API service
+    reverse_proxy api:8080 {
+        # Health check settings
+        health_timeout 5s
+        health_status 200
+
+        # Header adjustments
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Useful response headers
+    header {
+        # Enable HTTP Strict Transport Security (HSTS)
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+        # Prevent browsers from MIME-sniffing
+        X-Content-Type-Options "nosniff"
+
+        # Enable Cross-Site Scripting filter
+        X-XSS-Protection "1; mode=block"
+
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+
+        # Remove Server header for security
+        -Server
+    }
+}
+
+# For a production environment, replace 'localhost' with your domain name:
+# example.com {
+#     # Same configuration as above
+# }
